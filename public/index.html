@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>el mundo de las hormigas | por kevin barbaran</title>
+    <style>
+        /* configuración de variables y reset */
+        :root {
+            --color-fondo: #0a0a0a;
+            --color-tarjeta: rgba(28, 28, 28, 0.8);
+            --color-acento: #ff9f43;
+            --color-texto: #e0e0e0;
+            --color-secundario: #a4b0be;
+            --fuente-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transicion: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            font-family: var(--fuente-principal);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* reglas de capitalización personalizada */
+        h1, h2, h3, p, span, li, a {
+            text-transform: lowercase;
+        }
+
+        h1::first-letter, h2::first-letter, h3::first-letter, p::first-letter, 
+        span::first-letter, li::first-letter, a::first-letter {
+            text-transform: uppercase;
+        }
+
+        /* fondo animado */
+        #fondo-particulas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1e1e1e 0%, #0a0a0a 100%);
+        }
+
+        /* navegación */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 10%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 159, 67, 0.2);
+        }
+
+        .autor-marca {
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--color-acento);
+        }
+
+        .menu a {
+            color: var(--color-texto);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            transition: var(--transicion);
+        }
+
+        .menu a:hover {
+            color: var(--color-acento);
+        }
+
+        /* sección hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #ffffff, #ff9f43);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* contenedor principal */
+        .contenedor {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        /* tarjetas de información */
+        .seccion {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transicion);
+        }
+
+        .seccion.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tarjeta-info {
+            background: var(--color-tarjeta);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--color-acento);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-hormigas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .item-hormiga {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--color-acento);
+        }
+
+        /* citas */
+        .cita {
+            font-style: italic;
+            border-left: 2px solid var(--color-acento);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            color: var(--color-secundario);
+        }
+
+        /* pie de página */
+        footer {
+            text-align: center;
+            padding: 4rem;
+            background: #050505;
+            border-top: 1px solid rgba(255, 159, 67, 0.1);
+        }
+
+        .firma-final {
+            font-size: 1.2rem;
+            color: var(--color-acento);
+            margin-bottom: 0.5rem;
+        }
+
+        /* animaciones de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animado {
+            animation: fadeIn 2s ease-in;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="fondo-particulas"></canvas>
+
+    <nav>
+        <div class="autor-marca">kevin barbaran</div>
+        <div class="menu">
+            <a href="#inicio">inicio</a>
+            <a href="#biologia">biología</a>
+            <a href="#sociedad">sociedad</a>
+            <a href="#citas">citas</a>
+        </div>
+    </nav>
+
+    <section class="hero" id="inicio">
+        <h1 class="animado">el imperio de las hormigas.</h1>
+        <p class="animado">una exploración profunda sobre los arquitectos más pequeños de la naturaleza.</p>
+        <p style="margin-top: 1rem; color: var(--color-acento);">investigación presentada por kevin barbaran.</p>
+    </section>
+
+    <div class="contenedor">
+        
+        <section class="seccion tarjeta-info" id="biologia">
+            <h2>anatomía y supervivencia.</h2>
+            <p>las hormigas han colonizado casi todos los rincones de la tierra. su éxito evolutivo se debe a una anatomía optimizada para el trabajo duro y la comunicación química eficiente. a diferencia de otros insectos, poseen una estructura llamada peciolo que les otorga una flexibilidad abdominal única en el reino animal.</p>
+            
+            <div class="grid-hormigas">
+                <div class="item-hormiga">
+                    <h3>comunicación química.</h3>
+                    <p>utilizan feromonas para trazar rutas invisibles. cuando una hormiga encuentra alimento, deja un rastro para que sus compañeras lo sigan con precisión milimétrica.</p>
+                </div>
+                <div class="item-hormiga">
+                    <h3>fuerza descomunal.</h3>
+                    <p>algunas especies pueden levantar hasta cincuenta veces su propio peso corporal. esto equivale a que un ser humano levantara un camión pequeño con los dientes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion tarjeta-info" id="sociedad">
+            <h2>la estructura de la colonia.</h2>
+            <p>una colonia de hormigas no es solo un grupo de insectos, es un superorganismo. cada individuo actúa como una célula de un cuerpo más grande. la división del trabajo está marcada por la edad y el tamaño de la hormiga, asegurando la eficiencia máxima en la recolección y defensa.</p>
+            
+            <div class="cita">
+                "las hormigas son los ciudadanos ideales. ellas anteponen el bienestar del estado a sus intereses individuales, trabajando sin descanso por un futuro que quizás no lleguen a ver." — adaptado de e.o. wilson, mirmecólogo.
+            </div>
+
+            <p>existen más de doce mil especies identificadas. desde las hormigas tejedoras de asia hasta las hormigas legionarias de sudamérica, cada grupo ha desarrollado estrategias de guerra y construcción que desafían la lógica humana.</p>
+        </section>
+
+        <section class="seccion tarjeta-info" id="citas">
+            <h2>datos científicos relevantes.</h2>
+            <p>según estudios recientes de la universidad de harvard, la biomasa total de todas las hormigas en la tierra es aproximadamente igual a la biomasa de todos los seres humanos. esto demuestra que la verdadera dominancia del planeta no pertenece a los más grandes, sino a los más organizados.</p>
+            <p>este sitio ha sido estructurado para demostrar capacidades de despliegue estático, manteniendo una jerarquía visual clara y un diseño minimalista bajo la autoría de kevin barbaran.</p>
+        </section>
+
+    </div>
+
+    <footer>
+        <p class="firma-final">este sitio es una obra de kevin barbaran.</p>
+        <p>desarrollado para la demostración de estrategias de nube y diseño web moderno. 2026.</p>
+    </footer>
+
+    <script>
+        // script para el fondo de partículas (simulación de colonia)
+        const canvas = document.getElementById('fondo-particulas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(255, 159, 67, 0.2)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // observer para animar las secciones al hacer scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.seccion').forEach(seccion => {
+            observer.observe(seccion);
+        });
+    </script>
+</body>
+</html>
