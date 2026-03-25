@@ -32,12 +32,13 @@
         }
 
         /* reglas de capitalización personalizada */
-        h1, h2, h3, p, span, li, a {
+        h1, h2, h3, p, span, li, a, input, button {
             text-transform: lowercase;
         }
 
         h1::first-letter, h2::first-letter, h3::first-letter, p::first-letter, 
-        span::first-letter, li::first-letter, a::first-letter {
+        span::first-letter, li::first-letter, a::first-letter, 
+        input::placeholder, button::first-letter {
             text-transform: uppercase;
         }
 
@@ -152,6 +153,45 @@
             border-left: 4px solid var(--color-acento);
         }
 
+        /* formulario crud */
+        .form-crud {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .form-crud input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 159, 67, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            flex: 1;
+            min-width: 200px;
+            outline: none;
+        }
+
+        .form-crud input:focus {
+            border-color: var(--color-acento);
+        }
+
+        .form-crud button {
+            padding: 12px 25px;
+            background: var(--color-acento);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transicion);
+        }
+
+        .form-crud button:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
         /* citas */
         .cita {
             font-style: italic;
@@ -175,7 +215,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* animaciones de entrada */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -184,7 +223,6 @@
         .animado {
             animation: fadeIn 2s ease-in;
         }
-
     </style>
 </head>
 <body>
@@ -197,7 +235,7 @@
             <a href="#inicio">inicio</a>
             <a href="#biologia">biología</a>
             <a href="#sociedad">sociedad</a>
-            <a href="#citas">citas</a>
+            <a href="#registro">registro</a>
         </div>
     </nav>
 
@@ -236,10 +274,18 @@
             <p>existen más de doce mil especies identificadas. desde las hormigas tejedoras de asia hasta las hormigas legionarias de sudamérica, cada grupo ha desarrollado estrategias de guerra y construcción que desafían la lógica humana.</p>
         </section>
 
-        <section class="seccion tarjeta-info" id="citas">
-            <h2>datos científicos relevantes.</h2>
-            <p>según estudios recientes de la universidad de harvard, la biomasa total de todas las hormigas en la tierra es aproximadamente igual a la biomasa de todos los seres humanos. esto demuestra que la verdadera dominancia del planeta no pertenece a los más grandes, sino a los más organizados.</p>
-            <p>este sitio ha sido estructurado para demostrar capacidades de despliegue estático, manteniendo una jerarquía visual clara y un diseño minimalista bajo la autoría de kevin barbaran.</p>
+        <section class="seccion tarjeta-info" id="registro">
+            <h2>registro de observadores de la colonia.</h2>
+            <p>ingresa tus datos para unirte a la base de datos de investigación de kevin barbaran. esta información se almacena en la nube mediante un sistema crud dinámico.</p>
+            
+            <div class="form-crud">
+                <input type="text" id="nombre" placeholder="nombre del observador">
+                <input type="text" id="rol" placeholder="especialidad (ej. mirmecólogo)">
+                <button onclick="agregarUsuario()">registrar datos</button>
+            </div>
+
+            <div class="grid-hormigas" id="lista-usuarios">
+                </div>
         </section>
 
     </div>
@@ -250,7 +296,7 @@
     </footer>
 
     <script>
-        // script para el fondo de partículas (simulación de colonia)
+        /* --- lógica del fondo de partículas --- */
         const canvas = document.getElementById('fondo-particulas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -271,17 +317,14 @@
                 this.speedX = Math.random() * 0.5 - 0.25;
                 this.speedY = Math.random() * 0.5 - 0.25;
             }
-
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-
                 if (this.x > canvas.width) this.x = 0;
                 if (this.x < 0) this.x = canvas.width;
                 if (this.y > canvas.height) this.y = 0;
                 if (this.y < 0) this.y = canvas.height;
             }
-
             draw() {
                 ctx.fillStyle = 'rgba(255, 159, 67, 0.2)';
                 ctx.beginPath();
@@ -291,35 +334,62 @@
         }
 
         function init() {
-            for (let i = 0; i < 80; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < 80; i++) particles.push(new Particle());
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
 
         init();
         animate();
 
-        // observer para animar las secciones al hacer scroll
+        /* --- lógica de animaciones scroll --- */
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.1 });
 
-        document.querySelectorAll('.seccion').forEach(seccion => {
-            observer.observe(seccion);
-        });
+        document.querySelectorAll('.seccion').forEach(seccion => observer.observe(seccion));
+
+        /* --- lógica funcional del crud --- */
+        async function cargarUsuarios() {
+            try {
+                const res = await fetch('/api/usuarios');
+                const usuarios = await res.json();
+                const lista = document.getElementById('lista-usuarios');
+                lista.innerHTML = '';
+                usuarios.forEach(u => {
+                    lista.innerHTML += `
+                        <div class="item-hormiga">
+                            <h3 style="text-transform: capitalize;">${u.nombre}</h3>
+                            <p>especialidad: ${u.rol}</p>
+                            <small style="color: var(--color-acento); opacity: 0.6;">id de observador: #00${u.id}</small>
+                        </div>`;
+                });
+            } catch (e) { console.log("error de conexión"); }
+        }
+
+        async function agregarUsuario() {
+            const nombre = document.getElementById('nombre').value;
+            const rol = document.getElementById('rol').value;
+            if(!nombre || !rol) return;
+
+            await fetch('/api/usuarios', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nombre, rol})
+            });
+            
+            document.getElementById('nombre').value = '';
+            document.getElementById('rol').value = '';
+            cargarUsuarios();
+        }
+
+        cargarUsuarios();
     </script>
 </body>
 </html>
